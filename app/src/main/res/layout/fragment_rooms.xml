@@ -5,6 +5,20 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ListView
+        android:id="@+id/listRooms"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/fabAddRoom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddRoom"
         android:layout_width="56dp"
@@ -16,4 +30,5 @@
         app:layout_constraintRight_toRightOf="parent"
         app:srcCompat="@drawable/ic_add_white_24dp"
         android:layout_marginEnd="8dp" />
+
 </android.support.constraint.ConstraintLayout>
