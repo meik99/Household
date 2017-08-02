@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class RoomFragment extends Fragment {
 
     FloatingActionButton fabAddRoom;
     ListView listRooms;
+    ArrayAdapter<Room> roomListAdapter;
 
     @Nullable
     @Override
@@ -37,6 +40,9 @@ public class RoomFragment extends Fragment {
 
         fabAddRoom = (FloatingActionButton) view.findViewById(R.id.fabAddRoom);
         listRooms = (ListView) view.findViewById(R.id.listRooms);
+        roomListAdapter = new ArrayAdapter<Room>(view.getContext(), android.R.layout.simple_list_item_1);
+
+        listRooms.setAdapter(roomListAdapter);
 
         fabAddRoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,14 +52,22 @@ public class RoomFragment extends Fragment {
             }
         });
 
+        initRooms();
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        initRooms();
+
+        super.onResume();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        initRooms();
     }
 
     private void initRooms() {
@@ -65,5 +79,10 @@ public class RoomFragment extends Fragment {
                         .newSession();
         List<Room> rooms = daoSession.queryBuilder(Room.class)
                 .build().list();
+        Room[] array = new Room[rooms.size()];
+
+        array = rooms.toArray(array);
+        roomListAdapter.clear();
+        roomListAdapter.addAll(array);
     }
 }

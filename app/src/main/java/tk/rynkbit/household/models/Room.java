@@ -108,6 +108,10 @@ public class Room {
         }
         myDao.update(this);
     }
+    @Override
+    public String toString() {
+        return getName();
+    }
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1185512297)
     public void __setDaoSession(DaoSession daoSession) {
