@@ -19,12 +19,9 @@ import tk.rynkbit.household.models.DaoSession;
 import tk.rynkbit.household.models.Room;
 import tk.rynkbit.household.models.Step;
 
-/**
- * Created by michael on 8/2/17.
- */
 
 class RoomListAdapter extends ArrayAdapter<Room>{
-    public RoomListAdapter(Context context) {
+    RoomListAdapter(Context context) {
         super(context, R.layout.item_room);
     }
 
@@ -32,7 +29,7 @@ class RoomListAdapter extends ArrayAdapter<Room>{
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Room room = this.getItem(position);
-        View v = null;
+        View v;
 
         if(room != null){
             v = LayoutInflater.from(getContext()).inflate(R.layout.item_room, parent, false);
@@ -43,13 +40,14 @@ class RoomListAdapter extends ArrayAdapter<Room>{
             listSteps.setAdapter(new ArrayAdapter<Step>(getContext(), android.R.layout.simple_list_item_1));
 
             v.setOnClickListener(new View.OnClickListener() {
+                @SuppressWarnings("unchecked")
                 @Override
                 public void onClick(View view) {
                     if(listSteps.getAdapter().getCount() <= 0){
                         DaoSession session = new DaoMaster(new DaoMaster.DevOpenHelper(
                                 getContext(), DBContract.NAME
                         ).getWritableDatabase()).newSession();
-                        ((ArrayAdapter<Step>)listSteps.getAdapter()).addAll(session.getStepDao().queryBuilder().build().list());
+                        ((ArrayAdapter<Step>)listSteps.getAdapter()).addAll(session.getStepDao().loadAll());
                         ((ArrayAdapter<Step>)listSteps.getAdapter()).notifyDataSetChanged();
                     }else{
                         ((ArrayAdapter<Step>)listSteps.getAdapter()).clear();
@@ -57,7 +55,9 @@ class RoomListAdapter extends ArrayAdapter<Room>{
                     }
                 }
             });
+            return v;
         }
-        return v;
+
+        throw new RuntimeException("Could not create View");
     }
 }

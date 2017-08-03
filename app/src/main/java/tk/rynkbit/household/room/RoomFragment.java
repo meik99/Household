@@ -8,21 +8,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.List;
 
 import tk.rynkbit.household.R;
-import tk.rynkbit.household.db.DBContract;
-import tk.rynkbit.household.models.DaoMaster;
-import tk.rynkbit.household.models.DaoSession;
+import tk.rynkbit.household.db.facade.RoomFacade;
 import tk.rynkbit.household.models.Room;
 
-/**
- * Created by michael on 30.07.17.
- */
 
 public class RoomFragment extends Fragment {
     private static final String TAG = RoomFragment.class.getSimpleName();
@@ -34,9 +27,6 @@ public class RoomFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        if(container != null){
-//            container.removeAllViews();
-        }
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
 
         fabAddRoom = (FloatingActionButton) view.findViewById(R.id.fabAddRoom);
@@ -53,14 +43,14 @@ public class RoomFragment extends Fragment {
             }
         });
 
-        initRooms();
+        initRooms(view);
 
         return view;
     }
 
     @Override
     public void onResume() {
-        initRooms();
+        initRooms(getView());
 
         super.onResume();
     }
@@ -71,15 +61,9 @@ public class RoomFragment extends Fragment {
 
     }
 
-    private void initRooms() {
-        DaoSession daoSession =
-                new DaoMaster(
-                        new DaoMaster.DevOpenHelper(
-                                this.getActivity().getApplicationContext(), DBContract.NAME)
-                                .getWritableDb())
-                        .newSession();
-        List<Room> rooms = daoSession.queryBuilder(Room.class)
-                .build().list();
+    private void initRooms(View view) {
+        RoomFacade roomFacade = new RoomFacade(view.getContext());
+        List<Room> rooms = roomFacade.getRooms();
         Room[] array = new Room[rooms.size()];
 
         array = rooms.toArray(array);
