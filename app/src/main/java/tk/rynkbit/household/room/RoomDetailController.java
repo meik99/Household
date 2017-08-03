@@ -5,9 +5,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import tk.rynkbit.household.R;
+import tk.rynkbit.household.db.DBContract;
 import tk.rynkbit.household.models.DaoMaster;
 import tk.rynkbit.household.models.DaoSession;
 import tk.rynkbit.household.models.Room;
+import tk.rynkbit.household.models.Step;
 
 import org.greenrobot.greendao.query.Query;
 
@@ -34,13 +36,24 @@ public class RoomDetailController implements View.OnClickListener {
         if(v == btnSave){
             if(editName.getText().toString().isEmpty() == false){
                 DaoSession daoSession = new DaoMaster(
-                        new DaoMaster.DevOpenHelper(mRoomDetailActivity, "householdDB")
+                        new DaoMaster.DevOpenHelper(mRoomDetailActivity, DBContract.NAME)
                                 .getWritableDb())
                         .newSession();
                 Room room = new Room();
+                Step step = new Step();
+
+                step.setName("Step");
+
+                daoSession.getStepDao().insert(step);
 
                 room.setName(editName.getText().toString());
-                daoSession.insert(room);
+
+                daoSession.getRoomDao().insert(room);
+
+                room.resetSteps();
+                room.getSteps().add(step);
+
+                room.update();
 
                 daoSession = null;
                 mRoomDetailActivity.onBackPressed();

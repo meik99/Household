@@ -15,6 +15,7 @@ import android.widget.ListView;
 import java.util.List;
 
 import tk.rynkbit.household.R;
+import tk.rynkbit.household.db.DBContract;
 import tk.rynkbit.household.models.DaoMaster;
 import tk.rynkbit.household.models.DaoSession;
 import tk.rynkbit.household.models.Room;
@@ -28,7 +29,7 @@ public class RoomFragment extends Fragment {
 
     FloatingActionButton fabAddRoom;
     ListView listRooms;
-    ArrayAdapter<Room> roomListAdapter;
+    RoomListAdapter roomListAdapter;
 
     @Nullable
     @Override
@@ -40,7 +41,7 @@ public class RoomFragment extends Fragment {
 
         fabAddRoom = (FloatingActionButton) view.findViewById(R.id.fabAddRoom);
         listRooms = (ListView) view.findViewById(R.id.listRooms);
-        roomListAdapter = new ArrayAdapter<Room>(view.getContext(), android.R.layout.simple_list_item_1);
+        roomListAdapter = new RoomListAdapter(view.getContext());
 
         listRooms.setAdapter(roomListAdapter);
 
@@ -74,7 +75,7 @@ public class RoomFragment extends Fragment {
         DaoSession daoSession =
                 new DaoMaster(
                         new DaoMaster.DevOpenHelper(
-                                this.getActivity().getApplicationContext(), "householdDB")
+                                this.getActivity().getApplicationContext(), DBContract.NAME)
                                 .getWritableDb())
                         .newSession();
         List<Room> rooms = daoSession.queryBuilder(Room.class)
