@@ -28,11 +28,12 @@ class RoomListAdapter extends ArrayAdapter<Room>{
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Room room = this.getItem(position);
+        final Room room = this.getItem(position);
         View v;
 
         if(room != null){
             v = LayoutInflater.from(getContext()).inflate(R.layout.item_room, parent, false);
+            v.setTag(room);
             TextView txtRoomName = (TextView) v.findViewById(R.id.txtRoom);
             final ListView listSteps = (ListView) v.findViewById(R.id.listSteps);
 
@@ -44,14 +45,11 @@ class RoomListAdapter extends ArrayAdapter<Room>{
                 @Override
                 public void onClick(View view) {
                     if(listSteps.getAdapter().getCount() <= 0){
-                        DaoSession session = new DaoMaster(new DaoMaster.DevOpenHelper(
-                                getContext(), DBContract.NAME
-                        ).getWritableDatabase()).newSession();
-                        ((ArrayAdapter<Step>)listSteps.getAdapter()).addAll(session.getStepDao().loadAll());
+                        ((ArrayAdapter<Step>)listSteps.getAdapter()).addAll(room.getSteps());
                         ((ArrayAdapter<Step>)listSteps.getAdapter()).notifyDataSetChanged();
+                        
                     }else{
                         ((ArrayAdapter<Step>)listSteps.getAdapter()).clear();
-                        ((ArrayAdapter<Step>)listSteps.getAdapter()).notifyDataSetChanged();
                     }
                 }
             });
